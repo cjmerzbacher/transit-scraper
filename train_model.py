@@ -31,6 +31,7 @@ class Train:
         self.arrival = arrival
         self.position = 0
         self.speed = 0
+<<<<<<< HEAD
         self.acceleration = 1
         self.speed_limit = 2
         #Select the stop list based on train type
@@ -47,10 +48,31 @@ class Train:
                 return self.position
             elif self.position < stop_list[i]:
                 #print("Next stop", stop_list[i])
+=======
+
+        #Select the stop list based on train type
+        switch (self.train_type){
+        case 'bullet': self.stop_list = [0, 4, 8, 10]
+            break;
+        case 'limited': self.stop_list = [0, 2, 4, 5, 8, 10]
+            break;
+        case 'local': self.stop_list = [0, 1, 2, 4, 5, 6, 8, 10]
+            break;
+        }
+
+    def get_next_stop(self):
+        for i in range(len(stop_list)):
+            if self.position == stop_list[i]:
+                print("At stop", self.position)
+                return self.position
+            elif self.position < stop_list[i]:
+                print("Next stop", stop_list[i])
+>>>>>>> 5c00a3303bf99a764c4d2015646786c4372b4955
                 return stop_list[i]
         return "Not a valid position"
 
     def get_departure_time(self):
+<<<<<<< HEAD
         print("Train has departed")
 
     def travel(self, limit_position):
@@ -72,3 +94,6 @@ class Train:
 
 
 t = Train('local', 10.25)
+=======
+        pass
+>>>>>>> 5c00a3303bf99a764c4d2015646786c4372b4955
