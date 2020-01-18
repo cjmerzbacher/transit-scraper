@@ -6,11 +6,15 @@ from scipy.integrate import odeint
 train_types = ['bullet', 'limited', 'local', 'limited']
 departures = [9, 10, 10.5, 10.75]
 
+train_types = ['bullet']
+departures = [0]
+
 class CalTrain:
-    def __init__(self, train_types, departures):
+    def __init__(self, train_types, departures, time):
         self.num_trains = len(train_types)
-        self.time = 0
+        self.time = time
         self.trains = []
+        self.time_step = 0.016667
         #Create trains in system
         for n in range(len(train_types)):
             self.trains.append(Train(train_types[n-1], departures[n-1]));
@@ -57,7 +61,8 @@ class CalTrain:
     def all_trains_travel(self):
         for t in self.trains:
             limit_position = self.get_limit_position(t)
-            t.travel(limit_position)
+            t.travel(limit_position, self.time_step)
+            self.time += self.time_step
 
 class Train:
     def __init__(self, train_type, departure):
@@ -66,8 +71,9 @@ class Train:
         self.position = 0
         self.speed = 0
         self.acceleration = 0
-        self.speed_limit = 2
+        self.speed_limit = 5
         self.accel_limit = 1
+        self.stop_timer = 0
         #Select the stop list based on train type
         if self.train_type ==  'bullet': self.stop_list = [0, 4, 8, 10]
         elif self.train_type ==  'limited': self.stop_list = [0, 2, 4, 5, 8, 10]
@@ -88,8 +94,13 @@ class Train:
     def calculate_arrival_time(self):
         print("Train has departed")
 
-    def travel(self, limit_position):
-        time_step = 0.1
+    def travel(self, limit_position, time_step):
+        #check if at stop, then wait
+        if self.position == self.get_next_stop() and self.stop_timer < 5:
+            self.stop_timer += 1
+            return
+        if self.stop_timer == 5:
+            self.stop_timer = 0
         stop_distance = limit_position - self.position
         stop_limit = np.sqrt(2*self.accel_limit*stop_distance)
         if (stop_limit > self.speed_limit) and (self.speed < self.speed_limit+self.acceleration * time_step):
@@ -106,7 +117,7 @@ class Train:
             #maintain constant velocity
             self.position += self.speed * time_step
 
-c = CalTrain(train_types, departures)
+c = CalTrain(train_types, departures, 0)
 c.all_trains_travel()
 c.get_train_positions()
 c.get_train_speeds()
