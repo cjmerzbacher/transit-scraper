@@ -58,12 +58,13 @@ while (min_count < total_min):
 
     print(100*min_count/total_min, "% done")
     min_count+=1
+
+    #Read out the trips to CSV
+    for t in trips:
+        filename = "scraped_data/"+ t.id + '_'+ t.train_type + '.csv'
+        t.timepoints.to_csv(filename)
+
     #Pause for 1 minute
     time.sleep(60)
 
 print("100% done")
-
-#Read out the trips to CSV
-for t in trips:
-    filename = "scraped_data/"+ t.id + '_'+ t.train_type + '.csv'
-    t.timepoints.to_csv(filename)
